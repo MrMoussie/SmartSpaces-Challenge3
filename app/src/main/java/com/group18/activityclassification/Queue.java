@@ -15,7 +15,7 @@ public class Queue {
         }
     }
 
-    public void addQueue(Attributes activity){
+    public void addToQueue(Attributes activity){
         queue.remove();
         queue.add(activity);
     }
@@ -26,7 +26,9 @@ public class Queue {
 
         for(int i = 0; i < queueLength; i++){
             Attributes type = tallyQueue.poll();
-            switch(type){
+            if (type == null) continue;
+
+            switch(type) {
                 case WALKING:
                     tallyArray[0]++;
                     break;

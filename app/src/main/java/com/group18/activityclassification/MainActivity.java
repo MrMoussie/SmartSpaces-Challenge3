@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private MySensor mySensor;
     private Classifier cls;
     private InputStream fileStream;
-
+    private Queue queue;
     private final static String FILE_J48 = "j48tree.model";
 
     @Override
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         try {
             initClassifier();
+            this.queue = new Queue();
 
             // Setup sensors
             mySensor = new MySensor();
