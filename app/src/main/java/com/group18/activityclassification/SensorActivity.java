@@ -25,6 +25,7 @@ public class SensorActivity implements SensorEventListener {
                 Acc = new ArrayList<>();
                 for (int i = 0; i < 3; i++) {
                     Acc.add(sensorEvent.values[i]);
+                    System.out.println("Acc val " + sensorEvent.values[i]);
                 }
                 this.sensor.setAcc(Acc);
                 this.sensor.setTimestamp(sensorEvent.timestamp);
@@ -34,6 +35,7 @@ public class SensorActivity implements SensorEventListener {
                 Lin = new ArrayList<>();
                 for (int i = 0; i < 3; i++) {
                     Lin.add(sensorEvent.values[i]);
+                    System.out.println("Lin val " + sensorEvent.values[i]);
                 }
                 this.sensor.setLinearAcc(Lin);
                 this.sensor.setTimestamp(sensorEvent.timestamp);
@@ -43,6 +45,7 @@ public class SensorActivity implements SensorEventListener {
                 Mag = new ArrayList<>();
                 for (int i = 0; i < 3; i++) {
                     Mag.add(sensorEvent.values[i]);
+                    System.out.println("Mag val " + sensorEvent.values[i]);
                 }
                 this.sensor.setMagneto(Mag);
                 this.sensor.setTimestamp(sensorEvent.timestamp);
@@ -52,6 +55,7 @@ public class SensorActivity implements SensorEventListener {
                 Gyro = new ArrayList<>();
                 for (int i = 0; i < 3; i++) {
                     Gyro.add(sensorEvent.values[i]);
+                    System.out.println("Gyro val " + sensorEvent.values[i]);
                 }
                 this.sensor.setGyro(Gyro);
                 this.sensor.setTimestamp(sensorEvent.timestamp);
