@@ -11,9 +11,11 @@ public class SensorActivity implements SensorEventListener {
     ArrayList<Float> Lin;
     ArrayList<Float> Gyro;
     MySensor sensor;
+    MainActivity main;
 
-    public SensorActivity(MySensor sensor) {
+    public SensorActivity(MySensor sensor, MainActivity main) {
         this.sensor = sensor;
+        this.main = main;
     }
 
     @Override
@@ -28,6 +30,7 @@ public class SensorActivity implements SensorEventListener {
                 }
                 this.sensor.setAcc(Acc);
                 this.sensor.setTimestamp(sensorEvent.timestamp);
+                this.main.update();
                 break;
 
             case Sensor.TYPE_LINEAR_ACCELERATION:

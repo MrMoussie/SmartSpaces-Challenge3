@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private InputStream fileStream;
     private Queue queue;
     private final static String FILE_J48 = "j48tree.model";
+    private final static String FILE_MP = "mp.model";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Setup sensors
             mySensor = new MySensor();
-            SensorEventListener sensorListener = new SensorActivity(mySensor);
-            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), 500);
-            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 500);
-            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 500);
+            SensorEventListener sensorListener = new SensorActivity(mySensor, this);
+            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
 
-            System.out.println(getActivityRightPocket());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,11 +74,17 @@ public class MainActivity extends AppCompatActivity {
         if (this.fileStream != null) this.fileStream.close();
     }
 
+    public void update() {
+        System.out.println(this.getActivityRightPocket());
+    }
+
     /**
      *
      * @return
      */
     private String getActivityRightPocket() {
+        if (!this.mySensor.isReady()) return null;
+
         // Attributes for the prediction model
         final Attribute attributeRightPocketAx = new Attribute(Attributes.RIGHT_POCKET_AX.toString());
         final Attribute attributeRightPocketAy = new Attribute(Attributes.RIGHT_POCKET_AY.toString());
@@ -124,41 +130,41 @@ public class MainActivity extends AppCompatActivity {
         dataUnpredicted.setClassIndex(dataUnpredicted.numAttributes() - 1);
 
         // TEST INSTANCE
-        DenseInstance testInstance = new DenseInstance(dataUnpredicted.numAttributes()) {
-            {
-                setValue(attributeRightPocketAx, 0);
-                setValue(attributeRightPocketAy, -9.8);
-                setValue(attributeRightPocketAz, 0);
-                setValue(attributeRightPocketLx, 0);
-                setValue(attributeRightPocketLy, 0);
-                setValue(attributeRightPocketLz, 0);
-                setValue(attributeRightPocketGx, 0);
-                setValue(attributeRightPocketGy, 0);
-                setValue(attributeRightPocketGz, 0);
-            }
-        };
-
-//        DenseInstance instance = new DenseInstance(dataUnpredicted.numAttributes()) {
+//        DenseInstance testInstance = new DenseInstance(dataUnpredicted.numAttributes()) {
 //            {
-//                setValue(attributeRightPocketAx, mySensor.getAcc().get(0));
-//                setValue(attributeRightPocketAy, mySensor.getAcc().get(1));
-//                setValue(attributeRightPocketAz, mySensor.getAcc().get(2));
-//                setValue(attributeRightPocketLx, mySensor.getLinearAcc().get(0));
-//                setValue(attributeRightPocketLy, mySensor.getLinearAcc().get(1));
-//                setValue(attributeRightPocketLz, mySensor.getLinearAcc().get(2));
-//                setValue(attributeRightPocketGx, mySensor.getGyro().get(0));
-//                setValue(attributeRightPocketGy, mySensor.getGyro().get(1));
-//                setValue(attributeRightPocketGz, mySensor.getGyro().get(2));
+//                setValue(attributeRightPocketAx, 0);
+//                setValue(attributeRightPocketAy, -9.8);
+//                setValue(attributeRightPocketAz, 0);
+//                setValue(attributeRightPocketLx, 0);
+//                setValue(attributeRightPocketLy, 0);
+//                setValue(attributeRightPocketLz, 0);
+//                setValue(attributeRightPocketGx, 0);
+//                setValue(attributeRightPocketGy, 0);
+//                setValue(attributeRightPocketGz, 0);
 //            }
 //        };
 
+        DenseInstance instance = new DenseInstance(dataUnpredicted.numAttributes()) {
+            {
+                setValue(attributeRightPocketAx, mySensor.getAcc().get(0));
+                setValue(attributeRightPocketAy, mySensor.getAcc().get(1));
+                setValue(attributeRightPocketAz, mySensor.getAcc().get(2));
+                setValue(attributeRightPocketLx, mySensor.getLinearAcc().get(0));
+                setValue(attributeRightPocketLy, mySensor.getLinearAcc().get(1));
+                setValue(attributeRightPocketLz, mySensor.getLinearAcc().get(2));
+                setValue(attributeRightPocketGx, mySensor.getGyro().get(0));
+                setValue(attributeRightPocketGy, mySensor.getGyro().get(1));
+                setValue(attributeRightPocketGz, mySensor.getGyro().get(2));
+            }
+        };
+
         // instance to use in prediction
         // reference to dataset
-        testInstance.setDataset(dataUnpredicted);
+        instance.setDataset(dataUnpredicted);
 
         // predict new sample
         try {
-            double result = cls.classifyInstance(testInstance);
+            double result = cls.classifyInstance(instance);
             return classes.get(Double.valueOf(result).intValue());
         } catch (Exception e) {
             e.printStackTrace();

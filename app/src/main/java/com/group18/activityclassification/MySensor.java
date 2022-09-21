@@ -54,4 +54,8 @@ public class MySensor {
 
     }
 
+    public boolean isReady() {
+        return this.Acc.size() == 3 && this.LinearAcc.size() == 3 && this.Gyro.size() == 3;
+    }
+
 }
