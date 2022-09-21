@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 500);
             sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 500);
 
-            System.out.println(getActivity());
+            System.out.println(getActivityRightPocket());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @return
      */
-    private String getActivity() {
+    private String getActivityRightPocket() {
         // Attributes for the prediction model
         final Attribute attributeRightPocketAx = new Attribute(Attributes.RIGHT_POCKET_AX.toString());
         final Attribute attributeRightPocketAy = new Attribute(Attributes.RIGHT_POCKET_AY.toString());
