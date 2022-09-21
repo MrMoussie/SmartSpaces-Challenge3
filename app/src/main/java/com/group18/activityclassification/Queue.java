@@ -4,47 +4,48 @@ import java.util.LinkedList;
 
 public class Queue {
 
-    java.util.Queue<String> queue;
+    java.util.Queue<Attributes> queue;
     final int queueLength = 5;
 
     public Queue() {
-        this.queue = new LinkedList<String>();
+        this.queue = new LinkedList<>();
 
         for(int i = 0; i < queueLength; i++){
-            queue.add("0/");
+            queue.add(null);
         }
     }
 
-    public void addQueue(String activity){
+    public void addQueue(Attributes activity){
         queue.remove();
         queue.add(activity);
     }
 
-    public String tallyQueue(){
+    public Attributes tallyQueue(){
         int[] tallyArray = {0, 0, 0, 0, 0, 0, 0};
-        java.util.Queue<String> tallyQueue = queue;
+        java.util.Queue<Attributes> tallyQueue = new LinkedList<>(queue);
+
         for(int i = 0; i < queueLength; i++){
-            String type = tallyQueue.poll();
+            Attributes type = tallyQueue.poll();
             switch(type){
-                case "walking":
+                case WALKING:
                     tallyArray[0]++;
                     break;
-                case "standing":
+                case STANDING:
                     tallyArray[1]++;
                     break;
-                case "jogging":
+                case JOGGING:
                     tallyArray[2]++;
                     break;
-                case "sitting":
+                case SITTING:
                     tallyArray[3]++;
                     break;
-                case "biking":
+                case BIKING:
                     tallyArray[4]++;
                     break;
-                case "upstairs":
+                case UPSTAIRS:
                     tallyArray[5]++;
                     break;
-                case "downstairs":
+                case DOWNSTAIRS:
                     tallyArray[6]++;
                     break;
                 default:
@@ -57,33 +58,23 @@ public class Queue {
             indexMax = tallyArray[i] > tallyArray[indexMax] ? i : indexMax;
         }
 
-        String activity = "\0";
         switch(indexMax){
             case 0:
-                activity = "walking";
-                break;
+                return Attributes.WALKING;
             case 1:
-                activity = "standing";
-                break;
+                return Attributes.STANDING;
             case 2:
-                activity = "jogging";
-                break;
+                return Attributes.JOGGING;
             case 3:
-                activity = "sitting";
-                break;
+                return Attributes.SITTING;
             case 4:
-                activity = "biking";
-                break;
+                return Attributes.BIKING;
             case 5:
-                activity = "upstairs";
-                break;
+                return Attributes.UPSTAIRS;
             case 6:
-                activity = "downstairs";
-                break;
+                return Attributes.DOWNSTAIRS;
             default:
-                break;
+                return null;
         }
-
-        return activity;
     }
 }
