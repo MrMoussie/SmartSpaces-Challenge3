@@ -4,12 +4,19 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
+import java.util.ArrayList;
+
 public class SensorActivity implements SensorEventListener {
+
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         Sensor sensor = sensorEvent.sensor;
         switch(sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
+                for (float value : sensorEvent.values) {
+
+                }
                 break;
             case Sensor.TYPE_LINEAR_ACCELERATION:
                 break;
