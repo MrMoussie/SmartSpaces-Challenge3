@@ -28,8 +28,16 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         init();
+    }
 
+    private void init() {
         loadWekaModel();
+
+        mySensor = new MySensor();
+        SensorEventListener sensorListener = new SensorActivity(mySensor);
+        sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), 500);
+        sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 500);
+        sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 500);
     }
 
     private void loadWekaModel() {
@@ -39,14 +47,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void init() {
-        mySensor = new MySensor();
-        SensorEventListener sensorListener = new SensorActivity(mySensor);
-        sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), 500);
-        sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 500);
-        sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 500);
     }
 
 }
