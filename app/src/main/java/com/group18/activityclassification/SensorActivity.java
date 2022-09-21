@@ -11,9 +11,9 @@ public class SensorActivity implements SensorEventListener {
     ArrayList<Float> Lin;
     ArrayList<Float> Mag;
     ArrayList<Float> Gyro;
-    com.group18.activityclassification.Sensor sensor;
+    MySensor sensor;
 
-    public SensorActivity(com.group18.activityclassification.Sensor sensor) {
+    public SensorActivity(MySensor sensor) {
         this.sensor = sensor;
     }
 

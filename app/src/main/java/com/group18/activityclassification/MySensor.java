@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Object class for storing sensor values received from the sensors inside the mobile device
  */
-public class Sensor {
+public class MySensor {
     private ArrayList<Float> Acc = new ArrayList<>();
     private ArrayList<Float> LinearAcc = new ArrayList<>();
     private ArrayList<Float> Gyro = new ArrayList<>();
@@ -52,12 +52,16 @@ public class Sensor {
         this.timestamp = timestamp;
     }
 
-    public Sensor(ArrayList<Float> A, ArrayList<Float> L, ArrayList<Float> G, ArrayList<Float> M, long timestamp) {
+    public MySensor(ArrayList<Float> A, ArrayList<Float> L, ArrayList<Float> G, ArrayList<Float> M, long timestamp) {
         this.Acc = A;
         this.LinearAcc = L;
         this.Gyro = G;
         this.Magneto = M;
         this.timestamp = timestamp;
+    }
+
+    public MySensor() {
+
     }
 
 }
