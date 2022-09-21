@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class SensorActivity implements SensorEventListener {
     ArrayList<Float> Acc;
     ArrayList<Float> Lin;
-    ArrayList<Float> Mag;
     ArrayList<Float> Gyro;
     MySensor sensor;
 
@@ -38,16 +37,6 @@ public class SensorActivity implements SensorEventListener {
 //                    System.out.println("Lin val " + sensorEvent.values[i]);
                 }
                 this.sensor.setLinearAcc(Lin);
-                this.sensor.setTimestamp(sensorEvent.timestamp);
-                break;
-
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                Mag = new ArrayList<>();
-                for (int i = 0; i < 3; i++) {
-                    Mag.add(sensorEvent.values[i]);
-//                    System.out.println("Mag val " + sensorEvent.values[i]);
-                }
-                this.sensor.setMagneto(Mag);
                 this.sensor.setTimestamp(sensorEvent.timestamp);
                 break;
 
