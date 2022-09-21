@@ -10,7 +10,7 @@ public class Sensor {
     private ArrayList<Float> LinearAcc = new ArrayList<>();
     private ArrayList<Float> Gyro = new ArrayList<>();
     private ArrayList<Float> Magneto = new ArrayList<>();
-    private float timestamp;
+    private long timestamp;
 
     public ArrayList<Float> getAcc() {
         return Acc;
@@ -44,19 +44,20 @@ public class Sensor {
         Magneto = magneto;
     }
 
-    public float getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(int timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    public Sensor(ArrayList<Float> A, ArrayList<Float> L, ArrayList<Float> G, ArrayList<Float> M, float timestamp) {
+    public Sensor(ArrayList<Float> A, ArrayList<Float> L, ArrayList<Float> G, ArrayList<Float> M, long timestamp) {
         this.Acc = A;
         this.LinearAcc = L;
         this.Gyro = G;
         this.Magneto = M;
         this.timestamp = timestamp;
     }
+
 }

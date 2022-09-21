@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
     private SensorManager sensorManager;
+    private com.group18.activityclassification.Sensor sensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        SensorEventListener sensorListener = new SensorActivity();
+        SensorEventListener sensorListener = new SensorActivity(this.sensor);
         sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
