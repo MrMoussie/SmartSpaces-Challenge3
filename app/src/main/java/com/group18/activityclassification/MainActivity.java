@@ -2,6 +2,7 @@ package com.group18.activityclassification;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
@@ -10,8 +11,6 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,17 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private Classifier cls;
     private InputStream fileStream;
     private Queue queue;
-    private ListView listView;
     private TextView currentActivity;
-    private ArrayAdapter arrayAdapter;
-    private ArrayList<String> previousValues = new ArrayList<>();
+    private final ArrayList<String> previousValues = new ArrayList<>();
 
     // FILES
     private final static String FILE_J48 = "j48tree.model";
-    private final static String FILE_J48_Wrist = "J48WristNoMagneto.model";
-    private final static String FILE_BAYES_NET = "BayesNet-2.model";
-    private final static String FILE_BAYES_NAIVE = "BayesNaive-2.model";
-    private final static String FILE_MP = "mp.model";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        listView = (ListView) findViewById(R.id.list_view);
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, previousValues);
+        ListView listView = findViewById(R.id.list_view);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, previousValues);
         listView.setAdapter(arrayAdapter);
-        currentActivity = (TextView) findViewById(R.id.textView2);
+        currentActivity = findViewById(R.id.textView2);
 
         init();
     }
@@ -109,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             if (previousValues.size() > 0 && previousValues.get(previousValues.size() - 1).contains(activity.toString())) return;
 
             Date date = new Date(System.currentTimeMillis());
-            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             String dateFormatted = formatter.format(date);
 
             currentActivity.setText(activity.toString());
@@ -137,16 +130,6 @@ public class MainActivity extends AppCompatActivity {
         final weka.core.Attribute attributeRightPocketGy = new weka.core.Attribute(Attribute.RIGHT_POCKET_GY.toString());
         final weka.core.Attribute attributeRightPocketGz = new weka.core.Attribute(Attribute.RIGHT_POCKET_GZ.toString());
 
-        // Wrist
-        final weka.core.Attribute attributeWristAx = new weka.core.Attribute(Attribute.WRIST_AX.toString());
-        final weka.core.Attribute attributeWristAy = new weka.core.Attribute(Attribute.WRIST_AY.toString());
-        final weka.core.Attribute attributeWristAz = new weka.core.Attribute(Attribute.WRIST_AZ.toString());
-        final weka.core.Attribute attributeWristLx = new weka.core.Attribute(Attribute.WRIST_LX.toString());
-        final weka.core.Attribute attributeWristLy = new weka.core.Attribute(Attribute.WRIST_LY.toString());
-        final weka.core.Attribute attributeWristLz = new weka.core.Attribute(Attribute.WRIST_LZ.toString());
-        final weka.core.Attribute attributeWristGx = new weka.core.Attribute(Attribute.WRIST_GX.toString());
-        final weka.core.Attribute attributeWristGy = new weka.core.Attribute(Attribute.WRIST_GY.toString());
-        final weka.core.Attribute attributeWristGz = new weka.core.Attribute(Attribute.WRIST_GZ.toString());
         final List<String> classes = new ArrayList<String>() {
             {
                 add(Attribute.WALKING.toString());
@@ -175,22 +158,6 @@ public class MainActivity extends AppCompatActivity {
                 add(attributeClass);
             }
         };
-        // Instances(...) requires ArrayList<> instead of List<>...
-//        ArrayList<weka.core.Attribute> attributeListWrist = new ArrayList<weka.core.Attribute>(2) {
-//            {
-//                add(attributeWristAx);
-//                add(attributeWristAy);
-//                add(attributeWristAz);
-//                add(attributeWristLx);
-//                add(attributeWristLy);
-//                add(attributeWristLz);
-//                add(attributeWristGx);
-//                add(attributeWristGy);
-//                add(attributeWristGz);
-//                weka.core.Attribute attributeClass = new weka.core.Attribute("@@class@@", classes);
-//                add(attributeClass);
-//            }
-//        };
 
         // unpredicted data sets (reference to sample structure for new instances)
         Instances dataUnpredicted = new Instances("TestInstances",
@@ -211,20 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 setValue(attributeRightPocketGz, mySensor.getGyro().get(2));
             }
         };
-
-//        DenseInstance instanceWrist = new DenseInstance(dataUnpredicted.numAttributes()) {
-//            {
-//                setValue(attributeWristAx, mySensor.getAcc().get(0));
-//                setValue(attributeWristAy, mySensor.getAcc().get(1));
-//                setValue(attributeWristAz, mySensor.getAcc().get(2));
-//                setValue(attributeWristLx, mySensor.getLinearAcc().get(0));
-//                setValue(attributeWristLy, mySensor.getLinearAcc().get(1));
-//                setValue(attributeWristLz, mySensor.getLinearAcc().get(2));
-//                setValue(attributeWristGx, mySensor.getGyro().get(0));
-//                setValue(attributeWristGy, mySensor.getGyro().get(1));
-//                setValue(attributeWristGz, mySensor.getGyro().get(2));
-//            }
-//        };
 
         // instance to use in prediction
         instanceRightPocket.setDataset(dataUnpredicted);
