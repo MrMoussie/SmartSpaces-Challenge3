@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private Queue queue;
     private TextView currentActivity;
     private final ArrayList<String> previousValues = new ArrayList<>();
+    ArrayAdapter arrayAdapter;
 
     // FILES
     private final static String FILE_J48 = "j48tree.model";
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         ListView listView = findViewById(R.id.list_view);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, previousValues);
+        this.arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, previousValues);
         listView.setAdapter(arrayAdapter);
         currentActivity = findViewById(R.id.textView2);
 
@@ -99,15 +102,20 @@ public class MainActivity extends AppCompatActivity {
         if (this.queue.isReady()) {
             Attribute activity = this.queue.tallyQueue();
 
-            if (previousValues.size() > 0 && previousValues.get(previousValues.size() - 1).contains(activity.toString())) return;
+            if (previousValues.size() > 0 && previousValues.get(0).contains(activity.toString())) return;
 
+            // Get current timestamp
             Date date = new Date(System.currentTimeMillis());
             @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             String dateFormatted = formatter.format(date);
 
+            // Add
             currentActivity.setText(activity.toString());
-            previousValues.add(dateFormatted + ' ' + this.queue.tallyQueue().toString());
-            System.out.println("Activity detected: " + this.queue.tallyQueue());
+            previousValues.add(0, dateFormatted + ' ' + this.queue.tallyQueue().toString());
+            this.arrayAdapter.notifyDataSetChanged();
+
+            // DEVELOPER DEBUG PURPOSE
+            System.out.println("[SYSTEM] Activity detected: " + this.queue.tallyQueue());
         }
     }
 
