@@ -4,28 +4,36 @@ import java.util.LinkedList;
 
 public class Queue {
 
-    java.util.Queue<Attributes> queue;
-    final int queueLength = 5;
+    private final java.util.Queue<Attribute> queue;
+    private final int queueLength = 125;
+    private int counter;
 
     public Queue() {
         this.queue = new LinkedList<>();
+        this.counter = 0;
 
         for(int i = 0; i < queueLength; i++){
             queue.add(null);
         }
     }
 
-    public void addToQueue(Attributes activity){
+    public void addToQueue(Attribute activity){
         queue.remove();
         queue.add(activity);
+        this.counter++;
     }
 
-    public Attributes tallyQueue(){
+    public boolean isReady() {
+        return this.counter >= this.queueLength;
+    }
+
+    public Attribute tallyQueue(){
         int[] tallyArray = {0, 0, 0, 0, 0, 0, 0};
-        java.util.Queue<Attributes> tallyQueue = new LinkedList<>(queue);
+        java.util.Queue<Attribute> tallyQueue = new LinkedList<>(queue);
+        this.counter = 0;
 
         for(int i = 0; i < queueLength; i++){
-            Attributes type = tallyQueue.poll();
+            Attribute type = tallyQueue.poll();
             if (type == null) continue;
 
             switch(type) {
@@ -62,19 +70,22 @@ public class Queue {
 
         switch(indexMax){
             case 0:
-                return Attributes.WALKING;
+                System.out.println("[SYSTEM] UPSTAIRS: " + tallyArray[5] + " DOWNSTAIRS: " + tallyArray[6] + " WALKING: " + tallyArray[0]);
+                return Attribute.WALKING;
             case 1:
-                return Attributes.STANDING;
+                return Attribute.STANDING;
             case 2:
-                return Attributes.JOGGING;
+                return Attribute.JOGGING;
             case 3:
-                return Attributes.SITTING;
+                return Attribute.SITTING;
             case 4:
-                return Attributes.BIKING;
+                return Attribute.BIKING;
             case 5:
-                return Attributes.UPSTAIRS;
+                System.out.println("[SYSTEM] UPSTAIRS: " + tallyArray[5] + " DOWNSTAIRS: " + tallyArray[6] + " WALKING: " + tallyArray[0]);
+                return Attribute.UPSTAIRS;
             case 6:
-                return Attributes.DOWNSTAIRS;
+                System.out.println("[SYSTEM] UPSTAIRS: " + tallyArray[5] + " DOWNSTAIRS: " + tallyArray[6] + " WALKING: " + tallyArray[0]);
+                return Attribute.DOWNSTAIRS;
             default:
                 return null;
         }

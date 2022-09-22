@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import weka.classifiers.Classifier;
-import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
 
@@ -24,7 +23,12 @@ public class MainActivity extends AppCompatActivity {
     private Classifier cls;
     private InputStream fileStream;
     private Queue queue;
+
+    // FILES
     private final static String FILE_J48 = "j48tree.model";
+    private final static String FILE_J48_Wrist = "J48WristNoMagneto.model";
+    private final static String FILE_BAYES_NET = "BayesNet-2.model";
+    private final static String FILE_BAYES_NAIVE = "BayesNaive-2.model";
     private final static String FILE_MP = "mp.model";
 
     @Override
@@ -37,19 +41,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * This function initializes this instance with a new queue, classifier and sensors.
      */
     private void init() {
         try {
-            initClassifier();
+            initClassifier(FILE_J48);
             this.queue = new Queue();
 
             // Setup sensors
             mySensor = new MySensor();
             SensorEventListener sensorListener = new SensorActivity(mySensor, this);
-            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_NORMAL);
-            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), 20000);
+            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 20000);
+            sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 20000);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,58 +61,78 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * This function initializes the classifier of the model from the file.
+     * @param file file name to be used, from the assets folder
      * @throws Exception
      */
-    private void initClassifier() throws Exception {
-        this.fileStream = getAssets().open(FILE_J48);
+    private void initClassifier(String file) throws Exception {
+        this.fileStream = getAssets().open(file);
         this.cls = (Classifier) weka.core.SerializationHelper
                 .read(this.fileStream);
     }
 
     /**
-     *
+     * This function closes the input file streams
      * @throws IOException
      */
     private void closeStream() throws IOException {
         if (this.fileStream != null) this.fileStream.close();
     }
 
+    /**
+     * This function is called to update the user activity.
+     * This function adds the activity to the queue and tallies the queue when it is ready for the final decision on the user activity.
+     */
     public void update() {
-        System.out.println(this.getActivityRightPocket());
+        this.queue.addToQueue(this.getActivityRightPocket());
+        if (this.queue.isReady()) {
+            System.out.println("Activity detected: " + this.queue.tallyQueue());
+        }
     }
 
     /**
-     *
-     * @return
+     * This function uses the model and the sensor data to predict the activity of the user.
+     * @return Attribute with the activity of the user
      */
-    private String getActivityRightPocket() {
+    private Attribute getActivityRightPocket() {
         if (!this.mySensor.isReady()) return null;
 
         // Attributes for the prediction model
-        final Attribute attributeRightPocketAx = new Attribute(Attributes.RIGHT_POCKET_AX.toString());
-        final Attribute attributeRightPocketAy = new Attribute(Attributes.RIGHT_POCKET_AY.toString());
-        final Attribute attributeRightPocketAz = new Attribute(Attributes.RIGHT_POCKET_AZ.toString());
-        final Attribute attributeRightPocketLx = new Attribute(Attributes.RIGHT_POCKET_LX.toString());
-        final Attribute attributeRightPocketLy = new Attribute(Attributes.RIGHT_POCKET_LY.toString());
-        final Attribute attributeRightPocketLz = new Attribute(Attributes.RIGHT_POCKET_LZ.toString());
-        final Attribute attributeRightPocketGx = new Attribute(Attributes.RIGHT_POCKET_GX.toString());
-        final Attribute attributeRightPocketGy = new Attribute(Attributes.RIGHT_POCKET_GY.toString());
-        final Attribute attributeRightPocketGz = new Attribute(Attributes.RIGHT_POCKET_GZ.toString());
+        // Right pocket
+        final weka.core.Attribute attributeRightPocketAx = new weka.core.Attribute(Attribute.RIGHT_POCKET_AX.toString());
+        final weka.core.Attribute attributeRightPocketAy = new weka.core.Attribute(Attribute.RIGHT_POCKET_AY.toString());
+        final weka.core.Attribute attributeRightPocketAz = new weka.core.Attribute(Attribute.RIGHT_POCKET_AZ.toString());
+        final weka.core.Attribute attributeRightPocketLx = new weka.core.Attribute(Attribute.RIGHT_POCKET_LX.toString());
+        final weka.core.Attribute attributeRightPocketLy = new weka.core.Attribute(Attribute.RIGHT_POCKET_LY.toString());
+        final weka.core.Attribute attributeRightPocketLz = new weka.core.Attribute(Attribute.RIGHT_POCKET_LZ.toString());
+        final weka.core.Attribute attributeRightPocketGx = new weka.core.Attribute(Attribute.RIGHT_POCKET_GX.toString());
+        final weka.core.Attribute attributeRightPocketGy = new weka.core.Attribute(Attribute.RIGHT_POCKET_GY.toString());
+        final weka.core.Attribute attributeRightPocketGz = new weka.core.Attribute(Attribute.RIGHT_POCKET_GZ.toString());
+
+        // Wrist
+        final weka.core.Attribute attributeWristAx = new weka.core.Attribute(Attribute.WRIST_AX.toString());
+        final weka.core.Attribute attributeWristAy = new weka.core.Attribute(Attribute.WRIST_AY.toString());
+        final weka.core.Attribute attributeWristAz = new weka.core.Attribute(Attribute.WRIST_AZ.toString());
+        final weka.core.Attribute attributeWristLx = new weka.core.Attribute(Attribute.WRIST_LX.toString());
+        final weka.core.Attribute attributeWristLy = new weka.core.Attribute(Attribute.WRIST_LY.toString());
+        final weka.core.Attribute attributeWristLz = new weka.core.Attribute(Attribute.WRIST_LZ.toString());
+        final weka.core.Attribute attributeWristGx = new weka.core.Attribute(Attribute.WRIST_GX.toString());
+        final weka.core.Attribute attributeWristGy = new weka.core.Attribute(Attribute.WRIST_GY.toString());
+        final weka.core.Attribute attributeWristGz = new weka.core.Attribute(Attribute.WRIST_GZ.toString());
         final List<String> classes = new ArrayList<String>() {
             {
-                add(Attributes.WALKING.toString());
-                add(Attributes.STANDING.toString());
-                add(Attributes.JOGGING.toString());
-                add(Attributes.SITTING.toString());
-                add(Attributes.BIKING.toString());
-                add(Attributes.UPSTAIRS.toString());
-                add(Attributes.DOWNSTAIRS.toString());
+                add(Attribute.WALKING.toString());
+                add(Attribute.STANDING.toString());
+                add(Attribute.JOGGING.toString());
+                add(Attribute.SITTING.toString());
+                add(Attribute.BIKING.toString());
+                add(Attribute.UPSTAIRS.toString());
+                add(Attribute.DOWNSTAIRS.toString());
             }
         };
 
         // Instances(...) requires ArrayList<> instead of List<>...
-        ArrayList<Attribute> attributeList = new ArrayList<Attribute>(2) {
+        ArrayList<weka.core.Attribute> attributeListRightPocket = new ArrayList<weka.core.Attribute>(2) {
             {
                 add(attributeRightPocketAx);
                 add(attributeRightPocketAy);
@@ -119,32 +143,34 @@ public class MainActivity extends AppCompatActivity {
                 add(attributeRightPocketGx);
                 add(attributeRightPocketGy);
                 add(attributeRightPocketGz);
-                Attribute attributeClass = new Attribute("@@class@@", classes);
+                weka.core.Attribute attributeClass = new weka.core.Attribute("@@class@@", classes);
                 add(attributeClass);
             }
         };
-        // unpredicted data sets (reference to sample structure for new instances)
-        Instances dataUnpredicted = new Instances("TestInstances",
-                attributeList, 1);
-        // last feature is target variable
-        dataUnpredicted.setClassIndex(dataUnpredicted.numAttributes() - 1);
-
-        // TEST INSTANCE
-//        DenseInstance testInstance = new DenseInstance(dataUnpredicted.numAttributes()) {
+        // Instances(...) requires ArrayList<> instead of List<>...
+//        ArrayList<weka.core.Attribute> attributeListWrist = new ArrayList<weka.core.Attribute>(2) {
 //            {
-//                setValue(attributeRightPocketAx, 0);
-//                setValue(attributeRightPocketAy, -9.8);
-//                setValue(attributeRightPocketAz, 0);
-//                setValue(attributeRightPocketLx, 0);
-//                setValue(attributeRightPocketLy, 0);
-//                setValue(attributeRightPocketLz, 0);
-//                setValue(attributeRightPocketGx, 0);
-//                setValue(attributeRightPocketGy, 0);
-//                setValue(attributeRightPocketGz, 0);
+//                add(attributeWristAx);
+//                add(attributeWristAy);
+//                add(attributeWristAz);
+//                add(attributeWristLx);
+//                add(attributeWristLy);
+//                add(attributeWristLz);
+//                add(attributeWristGx);
+//                add(attributeWristGy);
+//                add(attributeWristGz);
+//                weka.core.Attribute attributeClass = new weka.core.Attribute("@@class@@", classes);
+//                add(attributeClass);
 //            }
 //        };
 
-        DenseInstance instance = new DenseInstance(dataUnpredicted.numAttributes()) {
+        // unpredicted data sets (reference to sample structure for new instances)
+        Instances dataUnpredicted = new Instances("TestInstances",
+                attributeListRightPocket, 1);
+        // last feature is target variable
+        dataUnpredicted.setClassIndex(dataUnpredicted.numAttributes() - 1);
+
+        DenseInstance instanceRightPocket = new DenseInstance(dataUnpredicted.numAttributes()) {
             {
                 setValue(attributeRightPocketAx, mySensor.getAcc().get(0));
                 setValue(attributeRightPocketAy, mySensor.getAcc().get(1));
@@ -158,14 +184,27 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+//        DenseInstance instanceWrist = new DenseInstance(dataUnpredicted.numAttributes()) {
+//            {
+//                setValue(attributeWristAx, mySensor.getAcc().get(0));
+//                setValue(attributeWristAy, mySensor.getAcc().get(1));
+//                setValue(attributeWristAz, mySensor.getAcc().get(2));
+//                setValue(attributeWristLx, mySensor.getLinearAcc().get(0));
+//                setValue(attributeWristLy, mySensor.getLinearAcc().get(1));
+//                setValue(attributeWristLz, mySensor.getLinearAcc().get(2));
+//                setValue(attributeWristGx, mySensor.getGyro().get(0));
+//                setValue(attributeWristGy, mySensor.getGyro().get(1));
+//                setValue(attributeWristGz, mySensor.getGyro().get(2));
+//            }
+//        };
+
         // instance to use in prediction
-        // reference to dataset
-        instance.setDataset(dataUnpredicted);
+        instanceRightPocket.setDataset(dataUnpredicted);
 
         // predict new sample
         try {
-            double result = cls.classifyInstance(instance);
-            return classes.get(Double.valueOf(result).intValue());
+            double result = cls.classifyInstance(instanceRightPocket);
+            return Attribute.valueOf(classes.get(Double.valueOf(result).intValue()).toUpperCase());
         } catch (Exception e) {
             e.printStackTrace();
         }

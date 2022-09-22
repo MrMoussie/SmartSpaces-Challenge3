@@ -30,7 +30,7 @@ public class SensorActivity implements SensorEventListener {
                 }
                 this.sensor.setAcc(Acc);
                 this.sensor.setTimestamp(sensorEvent.timestamp);
-                this.main.update();
+                this.main.update(); // UPDATE QUEUE AND ACTIVITY EVERY TIME WE GET A NEW ENTRY FOR ACC
                 break;
 
             case Sensor.TYPE_LINEAR_ACCELERATION:
