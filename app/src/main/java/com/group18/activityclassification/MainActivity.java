@@ -7,10 +7,18 @@ import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import weka.classifiers.Classifier;
@@ -23,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
     private Classifier cls;
     private InputStream fileStream;
     private Queue queue;
+    private ListView listView;
+    private TextView currentActivity;
+    private ArrayAdapter arrayAdapter;
+    private ArrayList<String> previousValues = new ArrayList<>();
 
     // FILES
     private final static String FILE_J48 = "j48tree.model";
@@ -36,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        listView = (ListView) findViewById(R.id.list_view);
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, previousValues);
+        listView.setAdapter(arrayAdapter);
+        currentActivity = (TextView) findViewById(R.id.textView2);
 
         init();
     }
@@ -77,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void closeStream() throws IOException {
         if (this.fileStream != null) this.fileStream.close();
+
     }
 
     /**
@@ -86,6 +104,16 @@ public class MainActivity extends AppCompatActivity {
     public void update() {
         this.queue.addToQueue(this.getActivityRightPocket());
         if (this.queue.isReady()) {
+            Attribute activity = this.queue.tallyQueue();
+
+            if (previousValues.size() > 0 && previousValues.get(previousValues.size() - 1).contains(activity.toString())) return;
+
+            Date date = new Date(System.currentTimeMillis());
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            String dateFormatted = formatter.format(date);
+
+            currentActivity.setText(activity.toString());
+            previousValues.add(dateFormatted + ' ' + this.queue.tallyQueue().toString());
             System.out.println("Activity detected: " + this.queue.tallyQueue());
         }
     }
