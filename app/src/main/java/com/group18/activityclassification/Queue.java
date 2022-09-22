@@ -71,13 +71,12 @@ public class Queue {
         //WALKING POSTPROCESSING:
         if(tallyArray[5]<(queueLength/2)&&
                 tallyArray[6]<(queueLength/2)&&
-                (tallyArray[0]+tallyArray[5]+tallyArray[6])>(queueLength/2)){
+                (tallyArray[0]+tallyArray[5]+tallyArray[6])>(7*queueLength/10)){
             return Attribute.WALKING;
         }
 
         switch(indexMax){
             case 0:
-                System.out.println("[SYSTEM] UPSTAIRS: " + tallyArray[5] + " DOWNSTAIRS: " + tallyArray[6] + " WALKING: " + tallyArray[0]);
                 return Attribute.WALKING;
             case 1:
                 return Attribute.STANDING;
@@ -88,10 +87,8 @@ public class Queue {
             case 4:
                 return Attribute.BIKING;
             case 5:
-                System.out.println("[SYSTEM] UPSTAIRS: " + tallyArray[5] + " DOWNSTAIRS: " + tallyArray[6] + " WALKING: " + tallyArray[0]);
                 return Attribute.UPSTAIRS;
             case 6:
-                System.out.println("[SYSTEM] UPSTAIRS: " + tallyArray[5] + " DOWNSTAIRS: " + tallyArray[6] + " WALKING: " + tallyArray[0]);
                 return Attribute.DOWNSTAIRS;
             default:
                 return null;
