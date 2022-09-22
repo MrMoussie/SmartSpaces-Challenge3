@@ -68,6 +68,13 @@ public class Queue {
             indexMax = tallyArray[i] > tallyArray[indexMax] ? i : indexMax;
         }
 
+        //WALKING POSTPROCESSING:
+        if(tallyArray[5]<(queueLength/2)&&
+                tallyArray[6]<(queueLength/2)&&
+                (tallyArray[0]+tallyArray[5]+tallyArray[6])>(queueLength/2)){
+            return Attribute.WALKING;
+        }
+
         switch(indexMax){
             case 0:
                 System.out.println("[SYSTEM] UPSTAIRS: " + tallyArray[5] + " DOWNSTAIRS: " + tallyArray[6] + " WALKING: " + tallyArray[0]);
